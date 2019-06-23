@@ -243,7 +243,7 @@ Welcome to the business network generator
 ? Author name:  Markus Voge
 ? Author email: info@viridian-project.org
 ? License: GNU GPLv3
-? Namespace: org.viridianproject
+? Namespace: org.viridian
 ? Do you want to generate an empty template network? Yes: generate an empty template network
 ---
 ```
