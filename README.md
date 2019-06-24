@@ -181,6 +181,7 @@ Hyperledger Fabric CA.
 $ mkdir fabric-tools
 $ cd fabric-tools
 $ curl -O https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh
+# Download only binaries (skip samples and docker images):
 $ bash bootstrap.sh -s -d
 $ vi ~/.zshenv
 # Add:
