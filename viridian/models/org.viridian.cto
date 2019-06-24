@@ -32,7 +32,7 @@ abstract participant User identified by id {
   o DateTime createdAt
   o String passwordHash
   o DateTime timestampPassword
-  o Integer reputation
+  o Integer reputation default=0
   o String avatarUrl optional // URL to potentially external avatar image
 }
 
@@ -108,7 +108,7 @@ asset Label identified by id {
   o LabelLocaleData[] locales
   o String version optional
   o Score score // shall be recalculated when any information changes
-  o Status status
+  o Status status default=PRELIMINARY
 }
 
 /************
@@ -126,7 +126,7 @@ asset Producer identified by id {
   o DateTime updatedAt
   --> Label[] labels
   o Score score // shall be recalculated when any information changes
-  o Status status
+  o Status status default=PRELIMINARY
 }
 
 /***********
@@ -145,7 +145,6 @@ concept ProductLocaleData {
   o String[] categories
   o String imageUrl optional // URL to potentially external product image
   o String url optional // URL to producer website
-  o Status status
 }
 
 asset Product identified by id {
@@ -160,5 +159,5 @@ asset Product identified by id {
   --> Label[] labels
   --> ProductLocaleData[] locales
   o Score score // shall be recalculated when any information changes
-  o Status status
+  o Status status default=PRELIMINARY
 }
