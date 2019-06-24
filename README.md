@@ -249,3 +249,19 @@ Welcome to the business network generator
 ---
 ```
 
+### Create business network archive
+
+To test your network definition, create a business network archive that you can load into the Composer Playground.
+
+```
+$ cd viridian # change into the directory created by yo
+$ composer archive create --sourceType dir --sourceName .
+```
+
+Then you can start the Composer playground
+
+```
+$ composer-playground
+```
+
+create a new Web Browser connection and upload the file created by 'composer archive create', e.g. `viridian@0.0.1.bna`.
