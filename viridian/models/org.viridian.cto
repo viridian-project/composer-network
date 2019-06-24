@@ -24,11 +24,11 @@ namespace org.viridian
 
 abstract participant User identified by id {
   o String id
-  o String email unique regex=/^[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+@[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+$/ // try to match all allowed email address characters according to https://stackoverflow.com/questions/2049502/what-characters-are-allowed-in-an-email-address
+  o String email regex=/^[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+@[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+$/ // try to match all allowed email address characters according to https://stackoverflow.com/questions/2049502/what-characters-are-allowed-in-an-email-address
   /* email address required and must be unique and verified, shall not
      be visible on platform; TODO: perhaps only store the hash, but then
      we cannot simply contact the user; maybe store email address on private channel that only admins can access? */
-  o String name unique regex=/^[a-zA-Z0-9_\-.~|\/]+$/ // username shown publicly on platform
+  o String name regex=/^[a-zA-Z0-9_\-.~|\/]+$/ // username shown publicly on platform, must be unique
   o DateTime createdAt
   o String passwordHash
   o DateTime timestampPassword
