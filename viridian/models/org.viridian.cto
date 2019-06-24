@@ -157,7 +157,7 @@ asset Product identified by id {
   --> Producer producer
   --> Product[] containedProducts
   --> Label[] labels
-  --> ProductLocaleData[] locales
+  o ProductLocaleData[] locales
   o Score score // shall be recalculated when any information changes
   o Status status default="PRELIMINARY"
 }
