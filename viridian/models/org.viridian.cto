@@ -108,7 +108,7 @@ asset Label identified by id {
   o LabelLocaleData[] locales
   o String version optional
   o Score score // shall be recalculated when any information changes
-  o Status status default=PRELIMINARY
+  o Status status default="PRELIMINARY"
 }
 
 /************
@@ -126,7 +126,7 @@ asset Producer identified by id {
   o DateTime updatedAt
   --> Label[] labels
   o Score score // shall be recalculated when any information changes
-  o Status status default=PRELIMINARY
+  o Status status default="PRELIMINARY"
 }
 
 /***********
@@ -159,5 +159,5 @@ asset Product identified by id {
   --> Label[] labels
   --> ProductLocaleData[] locales
   o Score score // shall be recalculated when any information changes
-  o Status status default=PRELIMINARY
+  o Status status default="PRELIMINARY"
 }
