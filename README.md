@@ -249,7 +249,7 @@ Welcome to the business network generator
 ---
 ```
 
-### Create business network archive
+### Session 5.1/4.2: Create business network archive
 
 To test your network definition, create a business network archive that you can load into the Composer Playground.
 
