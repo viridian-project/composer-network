@@ -33,7 +33,7 @@ abstract participant User identified by id {
   o String passwordHash
   o DateTime timestampPassword
   o Integer reputation default=0
-  o String avatarUrl optional // URL to potentially external avatar image
+  o String avatarUrl regex=/^[a-z]+:\/\/[^ ]+$/ optional // URL to potentially external avatar image
 }
 
 participant Person extends User {
@@ -48,7 +48,7 @@ participant Person extends User {
   */
   o String firstName optional // if user wants, they can enter their real name
   o String lastName optional // if user wants, they can enter their real name
-  o String country // ISO county code (obligatory because passport number must be unique in each county)
+  o String country regex=/^[a-z]+$/ // ISO county code (obligatory because passport number must be unique in each county)
   o String passportNrHash /* the hash of the passport number to make sure
   that this person only participates under one account */
 }
@@ -64,8 +64,8 @@ participant Organization extends User {
      The check can and should probably be performed by a human.
   */
   o String orgName // what is the full official name of the organization?
-  o String url // URL of the website of the org., where the used email address should be listed
-  o String country optional // ISO country code (just for information)
+  o String url regex=/^[a-z]+:\/\/[^ ]+$/ // URL of the website of the org., where the used email address should be listed
+  o String country regex=/^[a-z]+$/ optional // ISO country code (just for information)
   o String address optional // where is this organization located?
 }
 
@@ -92,10 +92,10 @@ concept Score {
 **********/
 
 concept LabelLocaleData {
-  o String lang
+  o String lang regex=/^[a-z]+$/
   o String name
   o String description optional
-  o String url optional
+  o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional
   o String[] categories
 }
 
@@ -119,7 +119,7 @@ asset Producer identified by id {
   o String id
   o String name
   o String address optional
-  o String url optional
+  o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional
   --> User createdBy
   o DateTime createdAt
   --> User updatedBy
@@ -134,7 +134,7 @@ asset Producer identified by id {
 ************/
 
 concept ProductLocaleData {
-  o String lang // ISO language code, there should be only one locale data for each language
+  o String lang regex=/^[a-z]+$/ // ISO language code, there should be only one locale data for each language
   o String name // product 'short name'
   o String price optional
   o String currency optional
@@ -143,8 +143,8 @@ concept ProductLocaleData {
   o String ingredients optional
   o String[] packaging
   o String[] categories
-  o String imageUrl optional // URL to potentially external product image
-  o String url optional // URL to producer website
+  o String imageUrl regex=/^[a-z]+:\/\/[^ ]+$/ optional // URL to potentially external product image
+  o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional // URL to producer website
 }
 
 asset Product identified by id {
