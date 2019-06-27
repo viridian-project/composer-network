@@ -22,18 +22,29 @@ namespace org.viridian
   USERS
 *********/
 
-abstract participant User identified by id {
-  o String id
-  o String email regex=/^[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+@[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+$/ // try to match all allowed email address characters according to https://stackoverflow.com/questions/2049502/what-characters-are-allowed-in-an-email-address
-  /* email address required and must be unique and verified, shall not
-     be visible on platform; TODO: perhaps only store the hash, but then
-     we cannot simply contact the user; maybe store email address on private channel that only admins can access? */
+/* User contact information that should be hidden to other users, only visible
+   for the users themselves and for system admins to contact the user if needed.
+   In `permissions.acl`, this asset can be given read-access only to admins. */
+asset UserContact {
+  // try to match all allowed email address characters according to https://stackoverflow.com/questions/2049502/what-characters-are-allowed-in-an-email-address
+  o String email regex=/^[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+@[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+$/
+}
+
+abstract participant User identified by name {
   o String name regex=/^[a-zA-Z0-9_\-.~|\/]+$/ // username shown publicly on platform, must be unique
+  // o String email regex=/^[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+@[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+$/
+  --> UserContact contact
+  /* email address required and must be unique and verified, shall not
+     be visible to everyone; perhaps only store the hash, but then the system cannot contact the user;
+     maybe store email address in a different resource that only admins can access? */
   o DateTime createdAt
+  /* probably superfluous, when identity mgmt of Composer/Fabric/Fabric CA is used
   o String passwordHash
   o DateTime timestampPassword
+  */
   o Integer reputation default=0
   o String avatarUrl regex=/^[a-z]+:\/\/[^ ]+$/ optional // URL to potentially external avatar image
+  o String publicEmail regex=/^[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+@[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+$/ optional
 }
 
 participant Person extends User {
