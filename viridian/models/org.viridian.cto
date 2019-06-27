@@ -98,6 +98,16 @@ concept Score {
   o Integer economy range=[-100,100] // in the sense of 'value for money', longevity of product, price/performance ratio, is price too high because of the psychologically developed brand image? how economical is product for consumer?
 }
 
+abstract asset ReviewableAsset identified by id {
+  o String id
+  --> User createdBy
+  o DateTime createdAt
+  --> User updatedBy
+  o DateTime updatedAt
+  o Score score // shall be recalculated when any information changes
+  o Status status default="PRELIMINARY"
+}
+
 /*********
   LABELS
 **********/
@@ -110,34 +120,20 @@ concept LabelLocaleData {
   o String[] categories
 }
 
-asset Label identified by id {
-  o String id
-  --> User createdBy
-  o DateTime createdAt
-  --> User updatedBy
-  o DateTime updatedAt
+asset Label extends ReviewableAsset {
   o LabelLocaleData[] locales
   o String version optional
-  o Score score // shall be recalculated when any information changes
-  o Status status default="PRELIMINARY"
 }
 
 /************
   PRODUCERS
 *************/
 
-asset Producer identified by id {
-  o String id
+asset Producer extends ReviewableAsset {
   o String name
   o String address optional
   o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional
-  --> User createdBy
-  o DateTime createdAt
-  --> User updatedBy
-  o DateTime updatedAt
   --> Label[] labels
-  o Score score // shall be recalculated when any information changes
-  o Status status default="PRELIMINARY"
 }
 
 /***********
@@ -158,17 +154,40 @@ concept ProductLocaleData {
   o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional // URL to producer website
 }
 
-asset Product identified by id {
-  o String id
+asset Product extends ReviewableAsset {
   o String gtin optional // Global Trade Item Number, i.e. barcode, product may not have one
-  --> User createdBy
-  o DateTime createdAt
-  --> User updatedBy
-  o DateTime updatedAt
   --> Producer producer
   --> Product[] containedProducts
   --> Label[] labels
   o ProductLocaleData[] locales
-  o Score score // shall be recalculated when any information changes
-  o Status status default="PRELIMINARY"
+}
+
+/*********
+  REVIEW
+**********/
+
+enum ReviewDecision {
+  o PENDING
+  o APPROVED
+  o REJECTED
+  o IGNORED
+}
+
+enum RejectReason {
+  o NULL
+  o INCORRECT
+  o OUTDATED
+  o MISSING_SRC
+  o TRIVIAL
+}
+
+asset Review identified by id {
+  o String id
+  --> ReviewableAsset target
+  --> User user
+  o DateTime requestedAt
+  o ReviewDecision decision
+  o DateTime timestamp
+  o RejectReason rejectReason
+  o String reasonComment
 }
