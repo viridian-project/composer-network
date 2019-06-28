@@ -104,8 +104,11 @@ abstract asset ReviewableAsset identified by id {
   o DateTime createdAt
   --> User updatedBy
   o DateTime updatedAt
-  o Score score // shall be recalculated when any information changes
   o Status status default="PRELIMINARY"
+}
+
+abstract asset ScorableAsset extends ReviewableAsset {
+  o Score score // shall be recalculated when any information changes
 }
 
 /*********
@@ -120,7 +123,7 @@ concept LabelLocaleData {
   o String[] categories
 }
 
-asset Label extends ReviewableAsset {
+asset Label extends ScorableAsset {
   o LabelLocaleData[] locales
   o String version optional
 }
@@ -129,7 +132,7 @@ asset Label extends ReviewableAsset {
   PRODUCERS
 *************/
 
-asset Producer extends ReviewableAsset {
+asset Producer extends ScorableAsset {
   o String name
   o String address optional
   o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional
@@ -154,12 +157,72 @@ concept ProductLocaleData {
   o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional // URL to producer website
 }
 
-asset Product extends ReviewableAsset {
+asset Product extends ScorableAsset {
   o String gtin optional // Global Trade Item Number, i.e. barcode, product may not have one
   --> Producer producer
   --> Product[] containedProducts
   --> Label[] labels
   o ProductLocaleData[] locales
+}
+
+/**************
+  INFORMATION
+***************/
+
+enum InfoCategory {
+  o GENERAL_INFORMATION
+  o LIFE_CYCLE_ANALYSIS
+  o EXTERNAL_COSTS
+  o STUDY_OR_PAPER
+  o PRESS_ARTICLE
+  o INVESTIGATIVE_REPORT
+  o CORPORATE_SOCIAL_RESPONSIBILITY
+  o JURISDICTION
+  o OTHER
+}
+
+abstract concept Source {
+}
+
+concept WebSource extends Source {
+  o String url regex=/^[a-z]+:\/\/[^ ]+$/
+  o DateTime accessDate
+  o String title optional
+  o String[] authors optional
+}
+
+concept BookSource extends Source {
+  o String title
+  o String[] authors
+  o Integer publishYear
+  o String publisher optional
+  o String isbn optional
+  o Integer[] pages optional range=[1,]
+  o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional
+}
+
+concept ArticleSource extends Source {
+  o String title
+  o String[] authors
+  o String journal
+  o Integer year range=[1784,]
+  o Integer month range=[1,12]
+  o Integer volume
+  o Integer firstPage optional
+  o Integer lastPage optional
+  o String doi optional
+  o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional
+  o String booktitle optional
+  o String editor optional
+}
+
+asset Information extends ReviewableAsset {
+  o String title
+  o InfoCategory category
+  --> ScorableAsset target
+  o String description
+  /* o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional */
+  o Source[] sources
 }
 
 /*********
