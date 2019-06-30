@@ -266,3 +266,4 @@ $ composer-playground
 
 and create a new Web Browser connection and upload the file created by
 'composer archive create', e.g. `viridian@0.0.1.bna`.
+
