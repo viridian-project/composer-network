@@ -151,7 +151,7 @@ concept ProductLocaleData {
   o String price optional
   o String currency optional
   o String description optional // product 'long name' or the bottom licenses
-  o String quantity optional // how much contained in one package?
+  o String[] quantities optional // how much contained in one package? (can have several sizes)
   o String ingredients optional
   o String[] packaging
   o String[] categories
@@ -280,4 +280,30 @@ asset Rating identified by id {
   o Status status default="PRELIMINARY" /* This status should mirror the
     information's status and is only provided for convenience to avoid frequent
     information lookups when recalculating average score. */
+}
+
+/*********
+  VOTING
+**********/
+
+/**
+  Votings are the 'likes' or up/down votes. The sum of all votings gives the
+  weight of the voted asset, i.e. a proxy for its relevance.
+  The weights can subsequently enter the calculation of the average score of a
+  product/producer/label.
+**/
+
+abstract asset Voting identified by id {
+  o String id
+  --> User user
+  o DateTime timestamp
+  o Integer vote range=[-1,1]
+}
+
+asset RateVoting extends Voting {
+  --> Rating rating
+}
+
+asset InfoVoting extends Voting {
+  --> Information information
 }
