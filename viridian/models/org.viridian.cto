@@ -88,6 +88,7 @@ enum Status {
   o PRELIMINARY
   o ACTIVE
   o OUTDATED
+  o DELETED
 }
 
 concept Score {
@@ -223,6 +224,7 @@ asset Information extends ReviewableAsset {
   o String description
   /* o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional */
   o Source[] sources
+  o Integer weight default=0
 }
 
 /*********
@@ -253,4 +255,28 @@ asset Review identified by id {
   o DateTime timestamp
   o RejectReason rejectReason
   o String reasonComment
+}
+
+/*********
+  RATING
+**********/
+
+/**
+  Ratings are like atomic units of score. The weighted average of all ratings'
+  scores provides the score of a ScorableAsset. A rating must always refer to
+  one single Information.
+**/
+
+asset Rating identified by id {
+  o String id
+  --> ScorableAsset target
+  --> Information information
+  --> User createdBy
+  o DateTime createdAt
+  /* Ratings are not updatable */
+  o Score score
+  o Integer weight default=0
+  o Status status default="PRELIMINARY" /* This status should mirror the
+    information's status and is only provided for convenience to avoid frequent
+    information lookups when recalculating average score. */
 }
