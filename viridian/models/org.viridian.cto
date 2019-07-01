@@ -105,6 +105,7 @@ abstract asset ReviewableAsset identified by id {
   o DateTime createdAt
   --> User updatedBy
   o DateTime updatedAt
+  --> ReviewableAsset prevVersion optional
   o Status status default="PRELIMINARY"
 }
 
