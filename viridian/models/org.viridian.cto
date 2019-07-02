@@ -124,6 +124,9 @@ abstract asset ReviewableAsset identified by id {
     If so, the new asset version is not accepted and a message is displayed to the user,
     ideally pointing out the differences between her version and the version submitted
     to the 'review queue' during the editing. */
+  o String changeReason optional /* If this is a newer version (supersedes is set),
+    the user who updated the asset can supply a reason for the change/deletion to
+    increase the probability that the reviewers will approve the change. */
   o Status status default="PRELIMINARY"
 }
 
