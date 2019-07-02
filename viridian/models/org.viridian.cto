@@ -295,10 +295,27 @@ asset Rating identified by id {
   o DateTime createdAt
   /* Ratings are not updatable */
   o Score score
-  o Integer weight default=0
+  o Integer weight default=0 /* sum of votes */
   o Status status default="PRELIMINARY" /* This status should mirror the
     information's status and is only provided for convenience to avoid frequent
     information lookups when recalculating average score. */
+}
+
+/**********
+  COMMENT
+***********/
+
+asset Comment identified by id {
+  o String id
+  --> Rating rating
+  --> User createdBy
+  o DateTime createdAt
+  o String text
+  o Integer weight default=0 /* sum of votes */
+  o Flag flaggedAs
+  --> User flaggedBy
+  o DateTime flaggedAt
+  o String flaggedComment
 }
 
 /*********
@@ -325,4 +342,8 @@ asset RateVoting extends Voting {
 
 asset InfoVoting extends Voting {
   --> Information information
+}
+
+asset CommentVoting extends Voting {
+  --> Comment comment
 }
