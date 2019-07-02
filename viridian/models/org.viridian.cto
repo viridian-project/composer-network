@@ -105,7 +105,24 @@ abstract asset ReviewableAsset identified by id {
   o DateTime createdAt
   --> User updatedBy
   o DateTime updatedAt
-  --> ReviewableAsset prevVersion optional
+  --> ReviewableAsset supersedes optional /* Previous version of this asset before it was updated. */
+  --> ReviewableAsset supersededBy optional /* Newer version of this asset.
+    If `supersededBy` is not empty and status == "ACTIVE", then there is a newer version,
+    which is still under review (in the 'review queue'). If status == "OUTDATED",
+    then the newer version `supersededBy` was accepted by the reviewers.
+    There can always be only one version of the asset (within the 'asset chain')
+    with status == "ACTIVE". When a new version is set to "ACTIVE", then the previous
+    version must be set to "OUTDATED".
+    There can also be only one version of the asset with status == "PRELIMINARY"
+    (with the same asset in `supersedes`), i.e. only one new version of each asset
+    can be in the 'review queue'. When an asset has a new version under review, the
+    buttons for editing/deleting it must be deactivated with a message 'Currently under
+    review' (with link to the proposed new version). When a user submits a new version,
+    it must be checked whether in the meantime, an asset with the same asset in
+    `supersedes` and status == "PRELIMINARY" was already submitted (concurrently).
+    If so, the new asset version is not accepted and a message is displayed to the user,
+    ideally pointing out the differences between her version and the version submitted
+    to the 'review queue' during the editing. */
   o Status status default="PRELIMINARY"
 }
 
