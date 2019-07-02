@@ -100,6 +100,11 @@ concept Score {
   o Integer economy range=[-100,100] // in the sense of 'value for money', longevity of product, price/performance ratio, is price too high because of the psychologically developed brand image? how economical is product for consumer?
 }
 
+/**
+  Reviewable assets must pass a peer review going online. They can be
+  edited/updated/deleted by other users, initiating another peer review.
+**/
+
 abstract asset ReviewableAsset identified by id {
   o String id
   --> User createdBy
@@ -124,7 +129,7 @@ abstract asset ReviewableAsset identified by id {
     If so, the new asset version is not accepted and a message is displayed to the user,
     ideally pointing out the differences between her version and the version submitted
     to the 'review queue' during the editing. */
-  o String changeReason optional /* If this is a newer version (supersedes is set),
+  o String changeReason optional /* If this is a newer version (`supersedes` is set),
     the user who updated the asset can supply a reason for the change/deletion to
     increase the probability that the reviewers will approve the change. */
   o Status status default="PRELIMINARY"
@@ -253,6 +258,15 @@ asset Information extends ReviewableAsset {
   REVIEW
 **********/
 
+/**
+  Reviews, i.e. peer reviews, decide about whether an asset (information, product,
+  producer, label) is of high enough quality and unbiased enough to go online.
+  There should at least be a certain number of reviews supporting the asset.
+  The system selects random users and appoints them to perform a review. For
+  example, five users could be randomly selected of which at least three must
+  approve the asset.
+**/
+
 enum ReviewDecision {
   o PENDING
   o APPROVED
@@ -261,12 +275,13 @@ enum ReviewDecision {
 }
 
 enum RejectReason {
-  o NULL
+  o INAPPROPRIATE
   o INCORRECT
   o OUTDATED
-  o MISSING_SRC
   o TRIVIAL
   o DUPLICATE
+  o MISSING_SRC
+  o OTHER
 }
 
 asset Review identified by id {
@@ -308,6 +323,31 @@ asset Rating identified by id {
   COMMENT
 ***********/
 
+/**
+  Comments can be added to an information by users, e.g. supporting, putting into
+  perspective or discrediting an information, suggesting an interpretation of the
+  information or providing legitimation for a specific rating.
+  In order to save some work, comments are not reviewed before going online.
+  However, other users can add a flag to a comment, signifying that the comment
+  should be deleted. A review deciding about the comment deletion is then
+  initiated.
+**/
+
+enum FlagReason {
+  o INAPPROPRIATE
+  o INCORRECT
+  o OUTDATED
+  o TRIVIAL
+  o OTHER
+}
+
+concept Flag {
+  o FlagReason flaggedAs
+  --> User flaggedBy
+  o DateTime flaggedAt
+  o String comment
+}
+
 asset Comment identified by id {
   o String id
   --> Rating rating
@@ -315,10 +355,7 @@ asset Comment identified by id {
   o DateTime createdAt
   o String text
   o Integer weight default=0 /* sum of votes */
-  o Flag flaggedAs
-  --> User flaggedBy
-  o DateTime flaggedAt
-  o String flaggedComment
+  o Flag flag optional
 }
 
 /*********
