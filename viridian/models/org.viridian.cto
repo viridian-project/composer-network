@@ -89,6 +89,7 @@ enum Status {
   o ACTIVE
   o OUTDATED
   o DELETED
+  o REJECTED
 }
 
 concept Score {
@@ -262,6 +263,7 @@ enum RejectReason {
   o OUTDATED
   o MISSING_SRC
   o TRIVIAL
+  o DUPLICATE
 }
 
 asset Review identified by id {
