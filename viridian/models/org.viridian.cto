@@ -105,10 +105,14 @@ concept Score {
   edited/updated/deleted by other users, initiating another peer review.
 **/
 
-abstract asset ReviewableAsset identified by id {
+abstract asset ReviewableAsset identified by id { /* only Comment extends ReviewableAsset */
   o String id
   --> User createdBy
   o DateTime createdAt
+  o Status status default="PRELIMINARY"
+}
+
+abstract asset UpdatableAsset extends ReviewableAsset { /* only Information extends UpdatableAsset */
   --> User updatedBy
   o DateTime updatedAt
   --> ReviewableAsset supersedes optional /* Previous version of this asset before it was updated. */
@@ -132,10 +136,9 @@ abstract asset ReviewableAsset identified by id {
   o String changeReason optional /* If this is a newer version (`supersedes` is set),
     the user who updated the asset can supply a reason for the change/deletion to
     increase the probability that the reviewers will approve the change. */
-  o Status status default="PRELIMINARY"
 }
 
-abstract asset ScorableAsset extends ReviewableAsset {
+abstract asset ScorableAsset extends UpdatableAsset { /* all others (Product, Producer, Label) extend ScorableAsset */
   o Score score // shall be recalculated when any information changes
 }
 
@@ -244,7 +247,7 @@ concept ArticleSource extends Source {
   o String editor optional
 }
 
-asset Information extends ReviewableAsset {
+asset Information extends UpdatableAsset {
   o String title
   o InfoCategory category
   --> ScorableAsset target
@@ -291,8 +294,8 @@ asset Review identified by id {
   o DateTime requestedAt
   o ReviewDecision decision
   o DateTime timestamp
-  o RejectReason rejectReason
-  o String reasonComment
+  o RejectReason rejectReason optional
+  o String reasonComment optional
 }
 
 /*********
@@ -327,10 +330,13 @@ asset Rating identified by id {
   Comments can be added to an information by users, e.g. supporting, putting into
   perspective or discrediting an information, suggesting an interpretation of the
   information or providing legitimation for a specific rating.
-  In order to save some work, comments are not reviewed before going online.
-  However, other users can add a flag to a comment, signifying that the comment
-  should be deleted. A review deciding about the comment deletion is then
-  initiated.
+  In order to spare the users from some work, comments are not reviewed before
+  going online. However, other users can add a flag to a comment, signifying that
+  the comment should be deleted (e.g. in case of trolls). A review deciding about
+  the comment deletion is then initiated. To limit troll actions, a comment can
+  be made only once every X (e.g. 10) minutes. As long as at least one comment is
+  flagged, a user cannot make another comment. If the flagging results in
+  deletion, the user cannot make a comment for Y (e.g. 14) days.
 **/
 
 enum FlagReason {
@@ -348,11 +354,8 @@ concept Flag {
   o String comment
 }
 
-asset Comment identified by id {
-  o String id
+asset Comment extends ReviewableAsset {
   --> Rating rating
-  --> User createdBy
-  o DateTime createdAt
   o String text
   o Integer weight default=0 /* sum of votes */
   o Flag flag optional
