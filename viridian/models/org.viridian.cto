@@ -45,6 +45,8 @@ abstract participant User identified by name {
   o Integer reputation default=0
   o String avatarUrl regex=/^[a-z]+:\/\/[^ ]+$/ optional // URL to potentially external avatar image
   o String publicEmail regex=/^[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+@[a-zA-Z0-9.!#$%&'*+\-\/=?^_`{|}~]+$/ optional
+  o DateTime lastCommentAt default="1776-03-09T12:00:00.000Z"
+  o DateTime lastCommentDeletedAt default="1776-03-09T12:00:00.000Z"
 }
 
 participant Person extends User {
@@ -236,7 +238,7 @@ concept ArticleSource extends Source {
   o String title
   o String[] authors
   o String journal
-  o Integer year range=[1784,]
+  o Integer year range=[1776,]
   o Integer month range=[1,12]
   o Integer volume
   o Integer firstPage optional
@@ -334,9 +336,12 @@ asset Rating identified by id {
   going online. However, other users can add a flag to a comment, signifying that
   the comment should be deleted (e.g. in case of trolls). A review deciding about
   the comment deletion is then initiated. To limit troll actions, a comment can
-  be made only once every X (e.g. 10) minutes. As long as at least one comment is
-  flagged, a user cannot make another comment. If the flagging results in
-  deletion, the user cannot make a comment for Y (e.g. 14) days.
+  be made only once every X (e.g. 10) minutes, ensured by looking at the `lastCommentAt`
+  field of the user (is this required? Could also just do a query). As long as at
+  least one comment is flagged, a user cannot make another comment. If the flagging
+  results in deletion, the user cannot make a comment for Y (e.g. 14) days, ensured
+  by looking at the `lastCommentDeletedAt` field of the user (is this required?
+  Could also just do a query).
 **/
 
 enum FlagReason {
