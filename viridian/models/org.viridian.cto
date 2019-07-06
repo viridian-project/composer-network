@@ -68,7 +68,7 @@ participant Person extends User {
 
 /* NGOs and other organizations can have verified 'official' accounts */
 participant Organization extends User {
-  /* Organizations are verified by if they use an email address
+  /* Organizations are verified by if they use an email address (in their UserContact)
      registered under their official domain name, ideally an official
      contact address listed on the organization's web pages.
      If they prove that they can access this official email account,
@@ -80,6 +80,14 @@ participant Organization extends User {
   o String url regex=/^[a-z]+:\/\/[^ ]+$/ // URL of the website of the org., where the used email address should be listed
   o String country regex=/^[a-z]+$/ optional // ISO country code (just for information)
   o String address optional // where is this organization located?
+}
+
+participation Company extends Organization {
+  /* Logically the same as Organization. To distinguish profit-oriented companies
+     from NGOs etc., add this extra type of participant.
+     This account can be used to allow companies to respond to information and
+     ratings with an "official" account.
+  */
 }
 
 /*******************
