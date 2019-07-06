@@ -1,5 +1,14 @@
 # Open questions:
 
+ * Identify users by their user name? User name must be unique? Could also create
+   a unique ID for each user (e.g. on StackOverflow, it's an integer number), so
+   that the user name can be changed at will and must not be unique. But github
+   does not follow this path: User name cannot be changed and probably must be
+   unique.
+ * What if user wants to change their user name? Users are identified by their
+   user name, so it may be a problem to change that name. They also cannot open
+   a new account under the desired name if their passport is used to ensure that
+   every person only has one account.
  * Are we happy with the edit conflict resolution? (While asset is under review,
    no other change can be proposed, it is locked. When a user starts editing
    while another user already edits and submits first, the second user is notified
