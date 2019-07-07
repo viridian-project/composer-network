@@ -45,12 +45,28 @@ rule UsersCannotSeeOtherUsersContactDetails {
     action: DENY
 }
 
+/************************
+ * RULES FOR ALL ASSETS *
+ ************************/
+
 rule EveryoneCanSeePublicResources {
     description: "Every user can read all public resources in the org.viridian namespace. That means all resources except user contact data of other users, for which there is a special rule that goes to the top of this one. Because as soon as a rule matches, it is applied, the more specific rule about UserContact will be applied before this more general rule."
-    participant: "ANY"
+    participant: "org.viridian.User"
     operation: READ
     resource: "org.viridian.*"
     action: ALLOW
+}
+
+/**********************************
+ * ALLOW ALL USERS NETWORK ACCESS *
+ **********************************/
+
+rule NetworkAccessForUsers {
+  description:  "Grant all users read access to the network. This seems required for users to log into the composer playground. Don't know if needed in production."
+  participant: "org.viridian.User"
+  operation: READ
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
 }
 
 /******************************************
