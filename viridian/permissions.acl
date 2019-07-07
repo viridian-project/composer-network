@@ -12,6 +12,51 @@
  * limitations under the License.
  */
 
+/****************************
+ * RULES FOR VIRIDIAN USERS *
+ ****************************/
+
+rule PersonsCanUpdateTheirOwnData {
+    description: "Persons can change their own (but no other) editable data through a specific transaction"
+    participant(p): "org.viridian.Person"
+    operation: UPDATE
+    resource(r): "org.viridian.Person"
+    transaction(tx): "org.viridian.UpdatePersonData"
+    condition: (r.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+
+rule OrganizationsCanUpdateTheirOwnData {
+    description: "Organizations can change their own (but no other) editable data through a specific transaction"
+    participant(p): "org.viridian.Organization"
+    operation: UPDATE
+    resource(r): "org.viridian.Organization"
+    transaction(tx): "org.viridian.UpdateOrganizationData"
+    condition: (r.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+
+rule UsersCannotSeeOtherUsersContactDetails {
+    description: "Users can read (and change) their own contact details, but not that of other users to protect their privacy. Access is denied by this rule and granted by the next."
+    participant(p): "org.viridian.User"
+    operation: ALL
+    resource(r): "org.viridian.UserContact"
+    condition: (p.contact.getIdentifier() != r.getIdentifier())
+    action: DENY
+}
+
+rule EveryoneCanSeePublicResources {
+    description: "Every user can read all public resources in the org.viridian namespace. That means all resources except user contact data of other users, for which there is a special rule that goes to the top of this one. Because as soon as a rule matches, it is applied, the more specific rule about UserContact will be applied before this more general rule."
+    participant: "ANY"
+    operation: READ
+    resource: "org.viridian.*"
+    action: ALLOW
+}
+
+/******************************************
+ * RULES FOR SYSTEM NETWORK ADMINISTRATOR *
+ ******************************************/
+
 rule NetworkAdminUser {
     description: "Grant business network administrators full access to user resources"
     participant: "org.hyperledger.composer.system.NetworkAdmin"
