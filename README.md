@@ -256,6 +256,8 @@ To test your network definition, create a business network archive that you can 
 ```
 $ cd viridian # change into the directory created by yo
 $ composer archive create --sourceType dir --sourceName .
+# identical to:
+$ composer archive create -t dir -n .
 ```
 
 Then you can start the Composer playground
@@ -266,4 +268,3 @@ $ composer-playground
 
 and create a new Web Browser connection and upload the file created by
 'composer archive create', e.g. `viridian@0.0.1.bna`.
-
