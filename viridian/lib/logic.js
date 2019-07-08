@@ -46,3 +46,36 @@ async function updatePersonData(tx) {
   // throw new Error(`Something wrong when trying to change Person ${tx.person}.`);
   await personRegistry.update(tx.person);
 }
+
+/**
+ * Let an organizational user update their own data with this function
+ * @param {org.viridian.UpdateOrganizationData} tx - The transaction instance
+ * @transaction
+ */
+async function updateOrganizationData(tx) {
+  const organizationRegistry = await getParticipantRegistry(NS + '.Organization');
+  if (tx.avatarUrl) { // if something was entered
+    tx.organization.avatarUrl = tx.avatarUrl;
+  }
+  if (tx.publicEmail) { // if something was entered
+    tx.organization.publicEmail = tx.publicEmail;
+  }
+  if (tx.bio) { // if something was entered
+    tx.organization.bio = tx.bio;
+  }
+  if (tx.orgName) { // if something was entered
+    tx.organization.orgName = tx.orgName;
+  }
+  if (tx.url) { // if something was entered
+    tx.organization.url = tx.url;
+  }
+  if (tx.country) { // if something was entered
+    tx.organization.country = tx.country;
+  }
+  if (tx.address) { // if something was entered
+    tx.organization.address = tx.address;
+  }
+  // may throw an error with:
+  // throw new Error(`Something wrong when trying to change Organization ${tx.organization}.`);
+  await organizationRegistry.update(tx.organization);
+}
