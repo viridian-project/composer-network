@@ -16,7 +16,15 @@
  * RULES FOR VIRIDIAN USERS *
  ****************************/
 
-rule PersonsCanUpdateTheirOwnData {
+rule UpdatePersonDataCreate {
+    description: "Persons can change their own (but no other) editable data through a specific transaction"
+    participant(p): "org.viridian.Person"
+    operation: CREATE
+    resource(r): "org.viridian.UpdatePersonData"
+    condition: (r.person.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+rule UpdatePersonDataUpdate {
     description: "Persons can change their own (but no other) editable data through a specific transaction"
     participant(p): "org.viridian.Person"
     operation: UPDATE
@@ -26,7 +34,15 @@ rule PersonsCanUpdateTheirOwnData {
     action: ALLOW
 }
 
-rule OrganizationsCanUpdateTheirOwnData {
+rule UpdateOrganizationDataCreate {
+    description: "Organizations can change their own (but no other) editable data through a specific transaction"
+    participant(p): "org.viridian.Organization"
+    operation: CREATE
+    resource(r): "org.viridian.UpdateOrganizationData"
+    condition: (r.organization.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+rule UpdateOrganizationDataUpdate {
     description: "Organizations can change their own (but no other) editable data through a specific transaction"
     participant(p): "org.viridian.Organization"
     operation: UPDATE
@@ -66,6 +82,14 @@ rule NetworkAccessForUsers {
   participant: "org.viridian.User"
   operation: READ
   resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule UsersCanChangeSomething {
+  description:  "This is required so that users can modify something on the network."
+  participant: "org.viridian.User"
+  operation: CREATE
+  resource: "org.hyperledger.composer.system.HistorianRecord"
   action: ALLOW
 }
 
