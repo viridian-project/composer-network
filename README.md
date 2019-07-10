@@ -1,5 +1,7 @@
 Following Packt tutorial "Hyperledger for Blockchain Applications".
 
+The tutorial assumes you are working with Ubuntu 16.04 (e.g. in a virtual machine).
+
 ## Session 1.2: Setup terminal, zsh, and editor (optional)
 
 ```

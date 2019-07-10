@@ -64,7 +64,7 @@ participant Person extends User {
      It would be good to have an automated passport validation, for
      scalability when the number of users becomes very high. If this is
      feasible remains to be seen. */
-  o String country regex=/^[a-z]+$/ // ISO county code (obligatory because passport number must be unique in each county)
+  o String country regex=/^[A-Z]{2}$/ // ISO country code according to https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 (obligatory because passport number must be unique in each country)
   o String passportNrHash /* the hash of the passport number to make sure
       that this person only participates under one account */
   /* Fields that can be edited by user: */
@@ -85,7 +85,7 @@ participant Organization extends User {
   /* Fields that can be edited by user: */
   o String orgName // what is the full official name of the organization?
   o String url regex=/^[a-z]+:\/\/[^ ]+$/ // URL of the website of the org., where the used email address should be listed
-  o String country regex=/^[a-z]+$/ optional // ISO country code (just for information)
+  o String country regex=/^[A-Z]{2}$/ optional // ISO country code according to https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 (just for information)
   o String address optional // where is this organization located?
 }
 
@@ -117,7 +117,7 @@ concept Score {
 }
 
 /**
-  Reviewable assets must pass a peer review going online. They can be
+  Reviewable assets must pass a peer review before going online. They can be
   edited/updated/deleted by other users, initiating another peer review.
 **/
 
@@ -163,7 +163,7 @@ abstract asset ScorableAsset extends UpdatableAsset { /* all others (Product, Pr
 **********/
 
 concept LabelLocaleData {
-  o String lang regex=/^[a-z]+$/
+  o String lang regex=/^[a-z]{2}$/ // ISO language code according to https://en.wikipedia.org/wiki/ISO_639-1, there should be only one locale data for each language
   o String name
   o String description optional
   o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional
@@ -191,7 +191,7 @@ asset Producer extends ScorableAsset {
 ************/
 
 concept ProductLocaleData {
-  o String lang regex=/^[a-z]+$/ // ISO language code, there should be only one locale data for each language
+  o String lang regex=/^[a-z]{2}$/ // ISO language code according to https://en.wikipedia.org/wiki/ISO_639-1, there should be only one locale data for each language
   o String name // product 'short name'
   o String price optional
   o String currency optional
@@ -252,7 +252,7 @@ concept ArticleSource extends Source {
   o String title
   o String[] authors
   o String journal
-  o Integer year range=[1776,]
+  o Integer year
   o Integer month range=[1,12]
   o Integer volume
   o Integer firstPage optional
@@ -297,7 +297,7 @@ enum RejectReason {
   o INAPPROPRIATE
   o INCORRECT
   o OUTDATED
-  o TRIVIAL
+  /* o TRIVIAL not required as reject reason, because what appears trivial is subjective; info can be downvoted later */
   o DUPLICATE
   o MISSING_SRC
   o OTHER
@@ -308,8 +308,8 @@ asset Review identified by id {
   --> ReviewableAsset target
   --> User user
   o DateTime requestedAt
-  o ReviewDecision decision
-  o DateTime timestamp
+  o ReviewDecision decision default="PENDING"
+  o DateTime timestamp default="1776-03-09T12:00:00.000Z"
   o RejectReason rejectReason optional
   o String reasonComment optional
 }
@@ -438,6 +438,6 @@ transaction UpdateOrganizationData {
   /* Specific to Organization: */
   o String orgName optional // what is the full official name of the organization?
   o String url regex=/^[a-z]+:\/\/[^ ]+$/ optional // URL of the website of the org., where the used email address should be listed
-  o String country regex=/^[a-z]+$/ optional // ISO country code (just for information)
+  o String country regex=/^[A-Z]{2}$/ optional // ISO country code according to https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 (just for information)
   o String address optional // where is this organization located?
 }
