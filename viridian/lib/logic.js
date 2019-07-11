@@ -17,6 +17,9 @@
 // Our namespace:
 const NS = 'org.viridian';
 
+// For generating unique IDs
+// import uuidv4 from 'uuid/v4';
+
 /**
  * Let a personal user update their own data with this function
  * @param {org.viridian.UpdatePersonData} tx - The transaction instance
@@ -78,4 +81,43 @@ async function updateOrganizationData(tx) {
   // may throw an error with:
   // throw new Error(`Something wrong when trying to change Organization ${tx.organization}.`);
   await organizationRegistry.update(tx.organization);
+}
+
+/**
+ * Let a user update their contact data with this function
+ * @param {org.viridian.UpdateUserContact} tx - The transaction instance
+ * @transaction
+ */
+async function updateUserContact(tx) {
+  const factory = getFactory();
+
+  // Create a new user contact with the new data
+  // var id = uuidv4();
+  var id = tx.contactId;
+  const contact = factory.newResource(NS, 'UserContact', id);
+  contact.user = factory.newRelationship(NS, 'User', tx.user.getIdentifier());
+  contact.email = tx.email;
+  contact.timestamp = new Date();
+
+  // const userRegistry = await getParticipantRegistry(NS + '.User');
+  const contactRegistry = await getAssetRegistry(contact.getFullyQualifiedType());
+  await contactRegistry.add(contact);
+
+  // Create a new user secret that will be used to verify the new user contact
+  // id = uuidv4();
+  id = tx.secretId;
+  const secret = factory.newResource(NS, 'UserSecret', id);
+  secret.contact = factory.newRelationship(NS, 'UserContact', contact.getIdentifier());
+  // secret.secret = uuidv4();
+  secret.secret = '0ec40608-a4d1-4ae7-8711-fd6e292d4bc6'; // hardcoded for now, must get this
+    // random number from an external resource so that it is deterministic (equal across all peers)
+
+  // Send an email to the new email addres with the secret:
+  // TODO
+  // Email also must be sent by external resource, so that only one email is sent and not
+  // as many as there are peers
+
+  // Store the secret for verification later:
+  const secretRegistry = await getAssetRegistry(NS + '.UserSecret');
+  await secretRegistry.add(secret);
 }

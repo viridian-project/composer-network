@@ -1,0 +1,7 @@
+{
+  "$class": "org.viridian.UpdateUserContact",
+  "user": "org.viridian.Person#alice",
+  "email": "info@alicesworld.com",
+  "contactId": "6746f9fc-eefe-4a88-ae06-3726b444e903",
+  "secretId": "6e0ab7ff-0508-41c2-96b7-f29c4bba3702"
+}

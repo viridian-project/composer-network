@@ -16,7 +16,7 @@
  * RULES FOR VIRIDIAN USERS *
  ****************************/
 
-rule UpdatePersonDataCreate {
+rule UpdatePersonDataCreateTx {
     description: "Persons can change their own (but no other) editable data through a specific transaction"
     participant(p): "org.viridian.Person"
     operation: CREATE
@@ -34,7 +34,7 @@ rule UpdatePersonDataUpdate {
     action: ALLOW
 }
 
-rule UpdateOrganizationDataCreate {
+rule UpdateOrganizationDataCreateTx {
     description: "Organizations can change their own (but no other) editable data through a specific transaction"
     participant(p): "org.viridian.Organization"
     operation: CREATE
@@ -52,12 +52,47 @@ rule UpdateOrganizationDataUpdate {
     action: ALLOW
 }
 
+rule UpdateUserContactCreateTx {
+    description: "Users can change their contact data (which must be verified via secret) through this transaction"
+    participant(p): "org.viridian.User"
+    operation: CREATE
+    resource(r): "org.viridian.UpdateUserContact"
+    condition: (r.user.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+rule UpdateUserContactCreateContact {
+    description: "Users can change their contact data (which must be verified via secret) through this transaction"
+    participant(p): "org.viridian.User"
+    operation: CREATE
+    resource(r): "org.viridian.UserContact"
+    transaction(tx): "org.viridian.UpdateUserContact"
+    condition: (tx.user.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+rule UpdateUserContactCreateSecret {
+    description: "Users can change their contact data (which must be verified via secret) through this transaction"
+    participant(p): "org.viridian.User"
+    operation: CREATE
+    resource(r): "org.viridian.UserSecret"
+    transaction(tx): "org.viridian.UpdateUserContact"
+    condition: (tx.user.getIdentifier() == p.getIdentifier())
+    action: ALLOW
+}
+
+rule UsersCannotSeeUserSecrets {
+    description: "No user is allowed to read any user secret, only network admins. Users receive their secret via email to verify the address."
+    participant: "org.viridian.User"
+    operation: ALL
+    resource: "org.viridian.UserSecret"
+    action: DENY
+}
+
 rule UsersCannotSeeOtherUsersContactDetails {
     description: "Users can read (and change) their own contact details, but not that of other users to protect their privacy. Access is denied by this rule and granted by the next."
     participant(p): "org.viridian.User"
     operation: ALL
     resource(r): "org.viridian.UserContact"
-    condition: (p.contact.getIdentifier() != r.getIdentifier())
+    condition: (r.user.getIdentifier() != p.getIdentifier())
     action: DENY
 }
 
