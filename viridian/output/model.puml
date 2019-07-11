@@ -1,0 +1,281 @@
+@startuml
+title
+Model
+endtitle
+class org.viridian.UserContact << (A,green) >> {
+   + String id
+   + User user
+   + String email
+   + DateTime timestamp
+   + Boolean verified
+}
+class org.viridian.UserSecret << (A,green) >> {
+   + String id
+   + UserContact contact
+   + String secret
+}
+class org.viridian.User << (P,lightblue) >> {
+   + String name
+   + DateTime createdAt
+   + UserContact contact
+   + Integer reputation
+   + DateTime lastCommentAt
+   + DateTime lastCommentDeletedAt
+   + String avatarUrl
+   + String publicEmail
+   + String bio
+}
+class org.viridian.Person << (P,lightblue) >> {
+   + String country
+   + String passportNrHash
+   + String realName
+   + String url
+   + String location
+}
+org.viridian.Person --|> org.viridian.User
+class org.viridian.Organization << (P,lightblue) >> {
+   + String orgName
+   + String url
+   + String country
+   + String address
+}
+org.viridian.Organization --|> org.viridian.User
+class org.viridian.Company << (P,lightblue) >> {
+}
+org.viridian.Company --|> org.viridian.Organization
+class org.viridian.Status << (E,grey) >> {
+   + PRELIMINARY
+   + ACTIVE
+   + OUTDATED
+   + DELETED
+   + REJECTED
+}
+class org.viridian.Score {
+   + Integer environment
+   + Integer climate
+   + Integer society
+   + Integer health
+   + Integer economy
+}
+class org.viridian.ReviewableAsset << (A,green) >> {
+   + String id
+   + User createdBy
+   + DateTime createdAt
+   + Status status
+}
+class org.viridian.UpdatableAsset << (A,green) >> {
+   + User updatedBy
+   + DateTime updatedAt
+   + ReviewableAsset supersedes
+   + ReviewableAsset supersededBy
+   + String changeReason
+}
+org.viridian.UpdatableAsset --|> org.viridian.ReviewableAsset
+class org.viridian.ScorableAsset << (A,green) >> {
+   + Score score
+}
+org.viridian.ScorableAsset --|> org.viridian.UpdatableAsset
+class org.viridian.LabelLocaleData {
+   + String lang
+   + String name
+   + String description
+   + String url
+   + String[] categories
+}
+class org.viridian.Label << (A,green) >> {
+   + LabelLocaleData[] locales
+   + String version
+}
+org.viridian.Label --|> org.viridian.ScorableAsset
+class org.viridian.Producer << (A,green) >> {
+   + String name
+   + String address
+   + String url
+   + Label[] labels
+}
+org.viridian.Producer --|> org.viridian.ScorableAsset
+class org.viridian.ProductLocaleData {
+   + String lang
+   + String name
+   + String price
+   + String currency
+   + String description
+   + String[] quantities
+   + String ingredients
+   + String[] packaging
+   + String[] categories
+   + String imageUrl
+   + String url
+}
+class org.viridian.Product << (A,green) >> {
+   + String gtin
+   + Producer producer
+   + Product[] containedProducts
+   + Label[] labels
+   + ProductLocaleData[] locales
+}
+org.viridian.Product --|> org.viridian.ScorableAsset
+class org.viridian.InfoCategory << (E,grey) >> {
+   + GENERAL_INFORMATION
+   + LIFE_CYCLE_ANALYSIS
+   + EXTERNAL_COSTS
+   + STUDY_OR_PAPER
+   + PRESS_ARTICLE
+   + INVESTIGATIVE_REPORT
+   + CORPORATE_SOCIAL_RESPONSIBILITY
+   + JURISDICTION
+   + OTHER
+}
+class org.viridian.Source {
+}
+class org.viridian.WebSource {
+   + String url
+   + DateTime accessDate
+   + String title
+   + String[] authors
+}
+org.viridian.WebSource --|> org.viridian.Source
+class org.viridian.BookSource {
+   + String title
+   + String[] authors
+   + Integer publishYear
+   + String publisher
+   + String isbn
+   + Integer[] pages
+   + String url
+}
+org.viridian.BookSource --|> org.viridian.Source
+class org.viridian.ArticleSource {
+   + String title
+   + String[] authors
+   + String journal
+   + Integer year
+   + Integer month
+   + Integer volume
+   + Integer firstPage
+   + Integer lastPage
+   + String doi
+   + String url
+   + String booktitle
+   + String editor
+}
+org.viridian.ArticleSource --|> org.viridian.Source
+class org.viridian.Information << (A,green) >> {
+   + String title
+   + InfoCategory category
+   + ScorableAsset target
+   + String description
+   + Source[] sources
+   + Integer weight
+}
+org.viridian.Information --|> org.viridian.UpdatableAsset
+class org.viridian.ReviewDecision << (E,grey) >> {
+   + PENDING
+   + APPROVED
+   + REJECTED
+   + IGNORED
+}
+class org.viridian.RejectReason << (E,grey) >> {
+   + INAPPROPRIATE
+   + INCORRECT
+   + OUTDATED
+   + DUPLICATE
+   + MISSING_SRC
+   + OTHER
+}
+class org.viridian.Review << (A,green) >> {
+   + String id
+   + ReviewableAsset target
+   + User user
+   + DateTime requestedAt
+   + ReviewDecision decision
+   + DateTime timestamp
+   + RejectReason rejectReason
+   + String reasonComment
+}
+class org.viridian.Rating << (A,green) >> {
+   + String id
+   + ScorableAsset target
+   + Information information
+   + User createdBy
+   + DateTime createdAt
+   + Score score
+   + Integer weight
+   + Status status
+}
+class org.viridian.FlagReason << (E,grey) >> {
+   + INAPPROPRIATE
+   + INCORRECT
+   + OUTDATED
+   + TRIVIAL
+   + OTHER
+}
+class org.viridian.Flag {
+   + FlagReason flaggedAs
+   + User flaggedBy
+   + DateTime flaggedAt
+   + String comment
+}
+class org.viridian.Comment << (A,green) >> {
+   + Rating rating
+   + String text
+   + Integer weight
+   + Flag flag
+}
+org.viridian.Comment --|> org.viridian.ReviewableAsset
+class org.viridian.Voting << (A,green) >> {
+   + String id
+   + User user
+   + DateTime timestamp
+   + Integer vote
+}
+class org.viridian.RateVoting << (A,green) >> {
+   + Rating rating
+}
+org.viridian.RateVoting --|> org.viridian.Voting
+class org.viridian.InfoVoting << (A,green) >> {
+   + Information information
+}
+org.viridian.InfoVoting --|> org.viridian.Voting
+class org.viridian.CommentVoting << (A,green) >> {
+   + Comment comment
+}
+org.viridian.CommentVoting --|> org.viridian.Voting
+class org.viridian.UpdatePersonData << (T,yellow) >> {
+   + String id
+   + Person person
+   + String avatarUrl
+   + String publicEmail
+   + String bio
+   + String realName
+   + String url
+   + String location
+   + DateTime timestamp
+}
+class org.viridian.UpdateOrganizationData << (T,yellow) >> {
+   + String id
+   + Organization organization
+   + String avatarUrl
+   + String publicEmail
+   + String bio
+   + String orgName
+   + String url
+   + String country
+   + String address
+   + DateTime timestamp
+}
+class org.viridian.UpdateUserContact << (T,yellow) >> {
+   + String id
+   + String contactId
+   + String secretId
+   + User user
+   + String email
+   + DateTime timestamp
+}
+class org.viridian.VerifyUserContact << (T,yellow) >> {
+   + String id
+   + UserSecret userSecret
+   + String secret
+   + DateTime timestamp
+}
+@enduml

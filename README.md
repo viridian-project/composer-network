@@ -270,3 +270,54 @@ $ composer-playground
 
 and create a new Web Browser connection and upload the file created by
 'composer archive create', e.g. `viridian@0.0.1.bna`.
+
+
+## Composer is "end of life"
+
+According to the Composer chatroom under <https://chat.hyperledger.org/channel/composer>,
+Hyperledger Composer has become inactive and it is not recommended anymore to develop applications with Composer.
+
+### composer-concerto
+
+One of the best features of Composer is the very simple and yet powerful modeling language used in the
+.cto file. This domain-specific modeling language is actually called "concerto" and might still be useful
+beyond Composer's lifespan. See <https://github.com/hyperledger/composer-concerto> and
+<https://github.com/hyperledger/composer-concerto-tools>.
+
+Install concerto with npm: (not sure what the benefit of that is)
+
+```
+$ cd viridian
+$ npm install composer-concerto --save
+```
+
+Install concerto-tools to convert the .cto file into code for various programming languages (including Go,
+so that might be useful for coding a chaincode for Hyperledger Fabric v1.4 in Go directly!):
+
+```
+$ npm install -g composer-concerto-tools
+```
+
+Convert to Go: (see https://github.com/hyperledger/composer-concerto-tools)
+
+```
+$ node ~/.nvm/versions/node/v8.16.0/lib/node_modules/composer-concerto-tools/cli.js generate --ctoFiles concerto/org.viridian.cto --format Go
+```
+
+Writes to new directory `output`.
+
+Or convert to UML:
+
+```
+$ node ~/.nvm/versions/node/v8.16.0/lib/node_modules/composer-concerto-tools/cli.js generate --ctoFiles concerto/org.viridian.cto --format PlantUML
+```
+
+Then install plantuml:
+
+```
+$ sudo apt install plantuml
+$ cd output
+$ plantuml
+```
+
+This generates a file `model.png` with the UML diagram.
