@@ -1,0 +1,29 @@
+{
+  "$class": "org.viridian.Product",
+  "producer": "resource:org.viridian.Producer#0066",
+  "containedProducts": [],
+  "labels": ["resource:org.viridian.Label#0123"],
+  "locales": [
+    {
+      "lang": "de",
+      "name": "Ovomaltine Crunchy Cream 500 g",
+      "quantities": ["500 g"],
+      "packaging": ["Glas", "Plastik"],
+      "categories": ["Brotaufstrich", "Frühstück"]
+    }
+  ],
+  "score": {
+    "$class": "org.viridian.Score",
+    "environment": 0,
+    "climate": 0,
+    "society": 0,
+    "health": 0,
+    "economy": 0
+  },
+  "updatedBy": "resource:org.viridian.Person#alice",
+  "updatedAt": "2019-07-10T20:30:51.274Z",
+  "id": "5867",
+  "createdBy": "resource:org.viridian.Person#alice",
+  "createdAt": "2019-07-10T20:30:51.274Z",
+  "status": "PRELIMINARY"
+}
